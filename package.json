@@ -13,19 +13,21 @@
     "build:admin": "cd admin && npm install && npm run build",
     "build:backend": "cd backend && npm install",
     "build:python": "cd backend && pip install -r requirements.txt",
-    "build": "npm install && npm run build:frontend && npm run build:admin && npm run build:backend && npm run build:python"
+    "build": "npm install && npm run build:frontend && npm run build:admin && npm run build:backend && npm run build:python",
+    "setup": "npm install && cd frontend && npm install && cd ../admin && npm install && cd ../backend && npm install && pip install -r requirements.txt && cd ..",
+    "start": "cd backend && node server.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Deyasin-Srijon/PredictaCare.git"
+    "url": "git+https://github.com/shirin-hegde/PredictaCare.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Deyasin-Srijon/PredictaCare/issues"
+    "url": "https://github.com/shirin-hegde/PredictaCare/issues"
   },
-  "homepage": "https://github.com/Deyasin-Srijon/PredictaCare#readme",
+  "homepage": "https://github.com/shirin-hegde/PredictaCare#readme",
   "dependencies": {
     "concurrently": "^9.1.2",
     "react-markdown": "^10.1.0",
