@@ -1,5 +1,5 @@
 import axios from "axios";
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import { toast } from "react-toastify";
 export const AdminContext = createContext();
 
@@ -12,6 +12,28 @@ const AdminContextProvider = (props) => {
   const [appointments, setAppointments] = useState([]);
   const [dashData, setDashData] = useState(false);
   const [predictions, setPredictions] = useState([]);
+
+  // Listen for changes in localStorage
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const token = localStorage.getItem("aToken");
+      if (token !== aToken) {
+        setAToken(token || "");
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    
+    // Also check on component mount
+    const token = localStorage.getItem("aToken");
+    if (token !== aToken) {
+      setAToken(token || "");
+    }
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, [aToken]);
 
   const getAllDoctors = async () => {
     try {

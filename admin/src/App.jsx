@@ -22,28 +22,33 @@ const App = () => {
 
   const {aToken} = useContext(AdminContext)
   const {dToken} = useContext(DoctorContext)
+  
+  console.log("aToken:", aToken);
+  console.log("dToken:", dToken);
+  
   return aToken || dToken ? (
     <div className='bg-[#F8F9FD]'>
       <ToastContainer/>
       <Navbar/>
-
       <div className='flex items-start'>
         <Sidebar/>
-        <Routes>
-          {/* Admin Route*/}
-          <Route path='/' element={<></>}/>
-          <Route path='/admin-dashboard' element={<Dashboard/>}/>
-          <Route path='/all-appointments' element={<AllAppoinments/>}/>
-          <Route path='/add-doctor' element={<AddDoctor/>}/>
-          <Route path='/doctor-list' element={<DoctorList/>}/>
-          <Route path='/review' element={<Review/>}/>
+        <div className="p-4">
+          <Routes>
+            {/* Admin Route*/}
+            <Route path='/' element={<Dashboard/>}/>
+            <Route path='/admin-dashboard' element={<Dashboard/>}/>
+            <Route path='/all-appointments' element={<AllAppoinments/>}/>
+            <Route path='/add-doctor' element={<AddDoctor/>}/>
+            <Route path='/doctor-list' element={<DoctorList/>}/>
+            <Route path='/review' element={<Review/>}/>
 
-          {/* Doctor Route*/}
-          <Route path='/doctor-dashboard' element={<DoctorDashboard/>}/>
-          <Route path='/doctor-appointments' element={<DoctorAppointment/>}/>
-          <Route path='/doctor-review' element={<DoctorReview/>}/>
-          <Route path='/doctor-profile' element={<DoctorProfile/>}/>
-        </Routes>
+            {/* Doctor Route*/}
+            <Route path='/doctor-dashboard' element={<DoctorDashboard/>}/>
+            <Route path='/doctor-appointments' element={<DoctorAppointment/>}/>
+            <Route path='/doctor-review' element={<DoctorReview/>}/>
+            <Route path='/doctor-profile' element={<DoctorProfile/>}/>
+          </Routes>
+        </div>
       </div>
     </div>
   ) : (

@@ -96,7 +96,7 @@ const Navbar = () => {
                             )}
                         </div>
                     ) : (
-                        <button onClick={() => navigate('/login')} className='bg-[#5f6FFF] text-white px-8 py-3 rounded-full font-light hidden md:block cursor-pointer'>
+                        <button onClick={() => navigate('/login')} className='bg-[#5f6FFF] text-white px-8 py-3 rounded-full font-light cursor-pointer'>
                             Create account
                         </button>
                     )
@@ -115,6 +115,16 @@ const Navbar = () => {
                         <NavLink onClick={() => setShowMenu(false)} to='/doctors'><p className='px-4 py-2 rounded inline-block'>ALL DOCTORS</p></NavLink>
                         <NavLink onClick={() => setShowMenu(false)} to='/about'><p className='px-4 py-2 rounded inline-block'>ABOUT</p></NavLink>
                         <NavLink onClick={() => setShowMenu(false)} to='/contact'><p className='px-4 py-2 rounded inline-block'>CONTACT</p></NavLink>
+                        {token ? (
+                            <>
+                                <NavLink onClick={() => { setShowMenu(false); navigate('/my-profile'); }}><p className='px-4 py-2 rounded inline-block'>My Profile</p></NavLink>
+                                <NavLink onClick={() => { setShowMenu(false); navigate('/my-appointments'); }}><p className='px-4 py-2 rounded inline-block'>My Appointments</p></NavLink>
+                                <NavLink onClick={() => { setShowMenu(false); navigate('/prediction'); }}><p className='px-4 py-2 rounded inline-block'>DIAGNOAI</p></NavLink>
+                                <NavLink onClick={() => { setShowMenu(false); logout(); }}><p className='px-4 py-2 rounded inline-block text-red-500 font-medium'>LOGOUT</p></NavLink>
+                            </>
+                        ) : (
+                            <NavLink onClick={() => setShowMenu(false)} to='/login'><p className='px-4 py-2 rounded inline-block text-[#5f6FFF] font-medium'>LOGIN</p></NavLink>
+                        )}
                     </ul>
                 </div>
             </div>

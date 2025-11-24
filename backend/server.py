@@ -136,7 +136,9 @@ def predict(disease):
             features = [float(data[field]) for field in DISEASE_FIELDS[disease]]
             input_scaled = scalers[disease].transform(np.array([features]))
 
-        prediction_prob = models[disease].predict(input_scaled)[0][0]
+        prediction_prob = models[disease].predict(input_scaled)[0]
+        # If the model returns probability of NOT having disease, invert it
+        prediction_prob = 1.0 - prediction_prob
         prediction = "HIGH ⚠️⚠️" if prediction_prob > 0.8 else \
                      "MODERATE ⚠️" if prediction_prob > 0.5 else "LOW ✅"
 

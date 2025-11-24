@@ -9,7 +9,13 @@ import {
 import { assets } from "../assets/assets";
 
 function MediHubBot() {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([
+    {
+      text: "Hello! I'm PredictaCare AI, your healthcare assistant. How can I help you today?",
+      role: "bot",
+      timestamp: new Date(),
+    }
+  ]);
   const [userInput, setUserInput] = useState("");
   const [chat, setChat] = useState(null);
   const [isTyping, setIsTyping] = useState(false);
@@ -22,8 +28,11 @@ function MediHubBot() {
     setTimeout(() => setShowChat(true), 300);
   }, []);
 
+  // Add delay function
+  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
   const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-  const MODEL_NAME = import.meta.env.VITE_GEMINI_MODEL || "gemini-pro-latest";
+  const MODEL_NAME = import.meta.env.VITE_GEMINI_MODEL || "gemini-1.5-flash";
   
   const genAI = new GoogleGenerativeAI(API_KEY);
 
@@ -56,18 +65,18 @@ function MediHubBot() {
   useEffect(() => {
     const initChat = async () => {
       try {
-        const newChat = await genAI
-          .getGenerativeModel({ model: MODEL_NAME })
-          .startChat({
-            generationConfig,
-            safetySettings,
-            history: messages.map((msg) => ({
-              text: msg.text,
-              role: msg.role,
-            })),
-          });
+        const model = genAI.getGenerativeModel({ model: MODEL_NAME });
+        const newChat = await model.startChat({
+          generationConfig,
+          safetySettings,
+          history: messages.slice(0, -1).map((msg) => ({
+            role: msg.role === "user" ? "user" : "model",
+            parts: [{ text: msg.text }],
+          })),
+        });
         setChat(newChat);
       } catch (error) {
+        console.error("Failed to initialize chat:", error);
         setError("Failed to initialize chat. Please refresh and try again.");
       }
     };
@@ -106,11 +115,12 @@ function MediHubBot() {
           - Do not answer questions unrelated to healthcare. Ignore anything else.
           - Avoid repeating instructions. Just respond to the user's input naturally.
           - Format responses clearly with proper new lines & *bold text* for important information.
-        `;
+        `;
 
         const result = await chat.sendMessage(input_prompt);
+        const response = await result.response;
         const botMessage = {
-          text: result.response.text(),
+          text: response.text(),
           role: "bot",
           timestamp: new Date(),
         };

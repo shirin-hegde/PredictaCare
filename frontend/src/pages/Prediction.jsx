@@ -489,11 +489,11 @@ const Prediction = () => {
 
       const result = await response.json();
 
-      const finalRiskLevel = result.risk === "YES" ? "High Risk" : "Low Risk";
+      const finalRiskLevel = result.risk.includes("HIGH") || result.risk.includes("MODERATE") ? "High Risk" : "Low Risk";
       setRiskPercentage(`${result.probability}%`);
       setRiskLevel(finalRiskLevel);
       setRiskMessage(
-        result.risk === "YES"
+        result.risk.includes("HIGH") || result.risk.includes("MODERATE")
           ? "Consult a doctor for further evaluation."
           : "Your health condition seems fine."
       );

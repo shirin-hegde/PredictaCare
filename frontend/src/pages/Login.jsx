@@ -29,7 +29,8 @@ const Login = () => {
         if (data.success) {
           localStorage.setItem('token', data.token)
           setToken(data.token)
-          toast.success('Account created successfully!')
+          // Navigate immediately for better UX
+          navigate('/')
         } else {
           toast.error(data.message)
         }
@@ -38,7 +39,8 @@ const Login = () => {
         if (data.success) {
           localStorage.setItem('token', data.token)
           setToken(data.token)
-          toast.success('Logged in successfully!')
+          // Navigate immediately for better UX
+          navigate('/')
         } else {
           toast.error(data.message)
         }

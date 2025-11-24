@@ -9,7 +9,7 @@ import AppContextProvider from './context/AppContext.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter basename="/admin"> {/* Set the base path for admin panel */}
+    <BrowserRouter>
       <AdminContextProvider>
         <DoctorContextProvider>
           <AppContextProvider>

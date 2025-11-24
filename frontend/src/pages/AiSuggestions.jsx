@@ -31,7 +31,7 @@ const AISuggestions = () => {
       while (retries >= 0) {
         try {
           const model = genAI.getGenerativeModel({
-            model: import.meta.env.VITE_GEMINI_MODEL || "gemini-pro-latest",
+            model: import.meta.env.VITE_GEMINI_MODEL || "gemini-1.5-flash",
           });
 
           const result = await model.generateContent(prompt);
@@ -67,7 +67,7 @@ const AISuggestions = () => {
           setError(errorMessage);
           break;
         } finally {
-          if (retries === 0 || !err) {
+          if (retries === 0 || !error) {
             setLoading(false);
           }
         }

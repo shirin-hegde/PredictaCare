@@ -120,11 +120,10 @@ const updateProfile = async (req, res) => {
 
 const bookAppointment = async (req,res)=>{
     try {
-        const {userId,docId,slotDate,slotTime} = req.body
+        const {userId,docId,slotDate,slotTime,paymentMethod='card'} = req.body
         const docData = await doctorModel.findById(docId).select('-password')
         if (!docData.available) {
             return res.json({success:false,message:"Doctor not Avialable"})
-
         }
         let slots_booked = docData.slots_booked
         // checking for availability
@@ -150,6 +149,7 @@ const bookAppointment = async (req,res)=>{
             amount:docData.fees,
             slotTime,
             slotDate,
+            paymentMethod, // Add payment method to appointment data
             date:Date.now()
         }
 
@@ -157,8 +157,13 @@ const bookAppointment = async (req,res)=>{
         await newAppointment.save()
         // save new slotes data 
         await doctorModel.findByIdAndUpdate(docId,{slots_booked})
+        
+        // If payment method is cash or Razorpay is not configured, mark appointment as paid automatically
+        if (paymentMethod === 'cash' || !razorpayInstance) {
+            await appointmentModel.findByIdAndUpdate(newAppointment._id, { payment: true })
+        }
+        
         res.json({success:true,message:"Appointments Booked"})
-
     } catch (error) {
         console.log(error)
         res.json({ success: false, message: error.message })
@@ -208,14 +213,23 @@ const cancelAppointment = async (req,res)=>{
 
 // -------------------- Razorpay --------------------
 
-const razorpayInstance = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,        // rzp_test_xxx
-  key_secret: process.env.RAZORPAY_KEY_SECRET // test secret
-});
+// Create Razorpay instance only if environment variables are set
+let razorpayInstance = null;
+if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
+  razorpayInstance = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,        // rzp_test_xxx
+    key_secret: process.env.RAZORPAY_KEY_SECRET // test secret
+  });
+}
 
 // Create order
 const paymentRazorpay = async (req, res) => {
   try {
+    // Check if Razorpay is configured
+    if (!razorpayInstance) {
+      return res.json({ success: false, message: "Payment gateway not configured" });
+    }
+    
     const userId = req.userId || req.body.userId;
     const { appointmentId } = req.body;
 
@@ -255,6 +269,11 @@ const paymentRazorpay = async (req, res) => {
 // Verify payment (client-side confirmation)
 const verifyRazorpay = async (req, res) => {
   try {
+    // Check if Razorpay is configured
+    if (!razorpayInstance) {
+      return res.json({ success: false, message: "Payment gateway not configured" });
+    }
+    
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
@@ -300,6 +319,11 @@ const verifyRazorpay = async (req, res) => {
 // Webhook verification (important for Render test mode)
 const razorpayWebhook = async (req, res) => {
   try {
+    // Check if Razorpay is configured
+    if (!razorpayInstance) {
+      return res.status(400).json({ success: false, message: "Payment gateway not configured" });
+    }
+    
     const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
 
     // req.body is Buffer here

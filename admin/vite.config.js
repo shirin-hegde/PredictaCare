@@ -4,8 +4,6 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/admin/', // 🔥 Important for correct asset paths in production
-
   plugins: [react(), tailwindcss()],
 
   server: {

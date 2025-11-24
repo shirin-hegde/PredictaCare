@@ -262,10 +262,19 @@ const adminDashboard = async (req, res) => {
     const users = await userModel.find({});
     const appointments = await appointmentModel.find({});
 
+    // Calculate total earnings from all completed appointments
+    let totalEarnings = 0;
+    appointments.map((item) => {
+      if (item.isCompleted || item.payment) {
+        totalEarnings += item.amount;
+      }
+    });
+
     const dashData = {
       doctors: doctors.length,
       appointments: appointments.length,
       patients: users.length,
+      earnings: totalEarnings, // Add total earnings
       latestAppointments: appointments.reverse().slice(0, 5),
     };
 

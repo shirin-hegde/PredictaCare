@@ -126,6 +126,12 @@ const MyAppointments = () => {
 
   const appointmentRazorpay = async (appointmentId) => {
     try {
+      // Check if Razorpay is configured
+      if (!import.meta.env.VITE_RAZORPAY_KEY_ID || !import.meta.env.VITE_RAZORPAY_KEY_SECRET) {
+        toast.info("Payment gateway not configured. Contact admin.");
+        return;
+      }
+      
       const ok = await loadRazorpay();
       if (!ok) {
         toast.error("Failed to load Razorpay. Check your network.");
@@ -195,12 +201,21 @@ const MyAppointments = () => {
               )}
 
               {!item.cancelled && !item.payment && !item.isCompleted && (
-                <button
-                  onClick={() => appointmentRazorpay(item._id)}
-                  className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border border-gray-200 rounded hover:bg-[#5f6FFF] hover:text-white transition-all duration-300"
-                >
-                  Pay Online
-                </button>
+                import.meta.env.VITE_RAZORPAY_KEY_ID && import.meta.env.VITE_RAZORPAY_KEY_SECRET ? (
+                  <button
+                    onClick={() => appointmentRazorpay(item._id)}
+                    className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border border-gray-200 rounded hover:bg-[#5f6FFF] hover:text-white transition-all duration-300"
+                  >
+                    Pay Online
+                  </button>
+                ) : (
+                  <button
+                    className="text-sm text-stone-500 text-center sm:min-w-48 py-2 border border-gray-200 rounded bg-gray-100"
+                    disabled
+                  >
+                    Payment Not Configured
+                  </button>
+                )
               )}
 
               {!item.cancelled && !item.isCompleted && (

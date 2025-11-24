@@ -10,7 +10,6 @@ const Navbar = () => {
     const {dToken,setDToken} = useContext(DoctorContext)
     const navigate = useNavigate()
     const logout = () =>{
-
         navigate('/')
         aToken && setAToken('')
         aToken && localStorage.removeItem('aToken')

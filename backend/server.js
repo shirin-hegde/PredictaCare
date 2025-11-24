@@ -46,6 +46,7 @@ app.use(helmet());
 // ✅ CORS
 const allowedOrigins = [
   "http://localhost:5173",
+  "http://localhost:5174",
   "https://your-frontend.onrender.com",
 ];
 
@@ -149,6 +150,11 @@ app.use(
   express.static(path.join(__dirname, "../admin/dist/assets"))
 );
 app.use("/admin", express.static(path.join(__dirname, "../admin/dist")));
+
+// Add this for debugging
+app.get("/admin/test", (req, res) => {
+  res.send("Admin panel is working");
+});
 
 // ✅ Serve public directory for default images
 app.use(express.static(path.join(__dirname, "public")));

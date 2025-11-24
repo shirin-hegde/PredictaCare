@@ -143,9 +143,10 @@ const appointmentsDoctor = async (req, res) => {
 
 const appointmentComplete = async (req, res) => {
   try {
-    const { docId, appointmentId } = req.body;
+    const { appointmentId } = req.body;
+    const { docId } = req.body; // This is set by the authDoctor middleware
     const appointmentData = await appointmentModel.findById(appointmentId);
-    if (appointmentData && appointmentData.docId === docId) {
+    if (appointmentData && appointmentData.docId.toString() === docId.toString()) {
       await appointmentModel.findByIdAndUpdate(appointmentId, {
         isCompleted: true,
       });
@@ -161,15 +162,16 @@ const appointmentComplete = async (req, res) => {
 
 const appointmentCancel = async (req, res) => {
   try {
-    const { docId, appointmentId } = req.body;
+    const { appointmentId } = req.body;
+    const { docId } = req.body; // This is set by the authDoctor middleware
     const appointmentData = await appointmentModel.findById(appointmentId);
-    if (appointmentData && appointmentData.docId === docId) {
+    if (appointmentData && appointmentData.docId.toString() === docId.toString()) {
       await appointmentModel.findByIdAndUpdate(appointmentId, {
         cancelled: true,
       });
       return res.json({ success: true, message: "Appointment Cancelled" });
     } else {
-      return res.json({ success: false, message: "cancellation Failed" });
+      return res.json({ success: false, message: "Cancellation Failed" });
     }
   } catch (error) {
     console.log(error);
